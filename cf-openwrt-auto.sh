@@ -21,7 +21,7 @@ old_version=$(cat CloudflareST_version.txt )
 
 if [[ ! -f "CloudflareST" || ${version} != ${old_version} ]]; then
 	rm -rf CloudflareST_linux_${tag}.tar.gz
-	wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/${version}/CloudflareST_linux_${tag}.tar.gz
+	wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download${version}/CloudflareST_linux_${tag}.tar.gz
 	echo "${version}" > CloudflareST_version.txt
 	tar -xvf CloudflareST_linux_${tag}.tar.gz
 	chmod +x CloudflareST
