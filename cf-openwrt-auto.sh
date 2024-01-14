@@ -3,8 +3,6 @@
 [[ ! -d "/paniy/cloudflare" ]] && mkdir -p /paniy/cloudflare
 cd /paniy/cloudflare
 
-opkg install jq
-
 arch=$(uname -m)
 if [[ ${arch} =~ "x86" ]]; then
 	tag="amd"
@@ -16,12 +14,12 @@ else
 	exit 1
 fi
 
-version=$(curl -s https://api.github.com/repos/XIU2/CloudflareSpeedTest/tags | jq -r .[].name | head -1)
+version=$(curl -s https://api.github.com/repos/XIU2/CloudflareSpeedTest/tags | sed -n 's/.*"name": "\(.*\)".*/\1/p' | head -n 1)
 old_version=$(cat CloudflareST_version.txt )
 
 if [[ ! -f "CloudflareST" || ${version} != ${old_version} ]]; then
 	rm -rf CloudflareST_linux_${tag}.tar.gz
-	wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download${version}/CloudflareST_linux_${tag}.tar.gz
+	wget -N https://github.com/XIU2/CloudflareSpeedTest/releases/download/${version}/CloudflareST_linux_${tag}.tar.gz
 	echo "${version}" > CloudflareST_version.txt
 	tar -xvf CloudflareST_linux_${tag}.tar.gz
 	chmod +x CloudflareST
