@@ -28,8 +28,7 @@ if [[ ! -f "CloudflareST" || ${version} != ${old_version} ]]; then
 fi
 
 ##注意修改！！！
-/etc/init.d/haproxy stop
-/etc/init.d/passwall stop
+service passwall stop
 wait
 
 ./CloudflareST -dn 10 -tll 40 -o cf_result.txt
@@ -38,26 +37,13 @@ sleep 3
 
 if [[ -f "cf_result.txt" ]]; then
 	first=$(sed -n '2p' cf_result.txt | awk -F ',' '{print $1}') && echo $first >>ip-all.txt
-	second=$(sed -n '3p' cf_result.txt | awk -F ',' '{print $1}') && echo $second >>ip-all.txt
-	third=$(sed -n '4p' cf_result.txt | awk -F ',' '{print $1}') && echo $third >>ip-all.txt
 	wait
 	uci commit passwall
 	wait
 	##注意修改！！！
-	sed -i "s/$(uci get passwall.xxxxxxxxxx.address)/${first}/g" /etc/config/passwall
-	sed -i "s/$(uci get passwall.xxxxxxxxxx.address)/${second}/g" /etc/config/passwall
-	sed -i "s/$(uci get passwall.xxxxxxxxxx.address)/${third}/g" /etc/config/passwall
+	sed -i "s/$(uci get passwall.YJYS73HC.address)/${first}/g" /etc/config/passwall
 	wait
 	uci commit passwall
 	wait
-	[[ $(/etc/init.d/haproxy status) != "running" ]] && /etc/init.d/haproxy start
-	wait
-	[[ $(/etc/init.d/passwall status) != "running" ]] && /etc/init.d/passwall start
-	# wait
-	# if [[ -f "ip-all.txt" ]]; then
-	# 	sort -t "." -k4 -n -r ip-all.txt >ip-all-serialize.txt
-	# 	uniq -c ip-all.txt ip-mediate.txt
-	# 	sort -r ip-mediate.txt >ip-statistics.txt
-	# 	rm -rf ip-mediate.txt
-	# fi
+	service passwall start
 fi
