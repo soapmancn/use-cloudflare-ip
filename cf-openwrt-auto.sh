@@ -1,7 +1,7 @@
 #!/bin/bash
 
-[[ ! -d "/paniy/cloudflare" ]] && mkdir -p /paniy/cloudflare
-cd /paniy/cloudflare
+[[ ! -d "/usr/share/passwall/cloudflare" ]] && mkdir -p /usr/share/passwall/cloudflare
+cd /usr/share/passwall/cloudflare
 
 arch=$(uname -m)
 if [[ ${arch} =~ "x86" ]]; then
@@ -26,7 +26,7 @@ if [[ ! -f "CloudflareST" || ${version} != ${old_version} ]]; then
 fi
 
 ##注意修改！！！
-service passwall stop
+/etc/init.d/passwall stop
 wait
 
 ./CloudflareST -dn 10 -tll 40 -o cf_result.txt
@@ -43,5 +43,5 @@ if [[ -f "cf_result.txt" ]]; then
 	wait
 	uci commit passwall
 	wait
-	service passwall start
+	/etc/init.d/passwall start
 fi
